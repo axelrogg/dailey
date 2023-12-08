@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { BarCodeScanner, BarCodeScannerResult } from "expo-barcode-scanner";
 import { StatusBar } from "expo-status-bar";
 
-export default function Page() {
+export default function App() {
     const [hasPermission, setHasPermission] = useState<boolean>(false);
     const [scanned, setScanned] = useState<boolean>(false);
     const [wantsToScan, setWantsToScan] = useState<boolean>(false);
@@ -32,12 +32,12 @@ export default function Page() {
         return <Text>No access to camera</Text>;
     }
     return (
-        <View style={styles.container}>
-            <StatusBar style="auto" />
+        <>
             {!wantsToScan && (
-                <>
+                <View style={styles.baseContainer}>
+                    <StatusBar style="auto" />
                     <View style={styles.welcomeTextContainer}>
-                        <Text>Welcome to</Text>
+                        <Text>Bienvenido a</Text>
                         <Text style={styles.daileyText}>DAILEY</Text>
                     </View>
                     <TouchableOpacity
@@ -56,26 +56,68 @@ export default function Page() {
                             Type: {codeType}. Data: {codeData}
                         </Text>
                     )}
-                </>
+                </View>
             )}
             {wantsToScan && (
-                <BarCodeScanner
-                    onBarCodeScanned={
-                        scanned ? undefined : handleBarCodeScanned
-                    }
-                    style={StyleSheet.absoluteFillObject}
-                    barCodeTypes={BarCodeScanner.Constants.BarCodeType.ean13}
-                />
+                <View style={styles.scanningContainer}>
+                    <StatusBar style="dark" />
+                    <BarCodeScanner
+                        onBarCodeScanned={
+                            scanned ? undefined : handleBarCodeScanned
+                        }
+                        style={styles.scanner}
+                        barCodeTypes={
+                            BarCodeScanner.Constants.BarCodeType.ean13
+                        }
+                    >
+                        <TouchableOpacity
+                            style={styles.exitScannerButtonContainer}
+                            onPress={() => setWantsToScan(false)}
+                        >
+                            <Text style={styles.exitScannerButtonX}>X</Text>
+                        </TouchableOpacity>
+                    </BarCodeScanner>
+                </View>
             )}
-        </View>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    baseContainer: {
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
+        justifyContent: "center",
+    },
+    daileyText: {
+        color: "#1B669A",
+        fontSize: 50,
+        fontWeight: "bold",
+    },
+    exitScannerButtonContainer: {
+        alignItems: "center",
+        justifyContent: "center",
+        left: 10,
+        padding: 10,
+        top: 10,
+        width: 35,
+    },
+    exitScannerButtonX: {
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold",
+    },
+    scanner: {
+        bottom: 100,
+        left: 0,
+        position: "absolute",
+        top: 60,
+        width: "100%",
+    },
+    scanningContainer: {
+        flex: 1,
+        alignItems: "center",
+        backgroundColor: "black",
         justifyContent: "center",
     },
     scanCodeButtonContainer: {
@@ -88,11 +130,6 @@ const styles = StyleSheet.create({
     },
     scannedCodeResultText: {
         marginVertical: 20,
-    },
-    daileyText: {
-        color: "#1B669A",
-        fontSize: 50,
-        fontWeight: "bold",
     },
     welcomeTextContainer: {
         alignItems: "center",

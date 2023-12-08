@@ -28,8 +28,7 @@
                 {
                     "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
                 }
-            ],
-            "expo-router"
+            ]
         ]
     }
 }
